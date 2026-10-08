@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tribo da Moda | Boutique</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Playfair Display', serif; }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .nav-blur { backdrop-filter: blur(12px); background-color: rgba(255, 255, 255, 0.9); }
+        .image-zoom { transition: transform 700ms cubic-bezier(.2,.7,.2,1); }
+        .group:hover .image-zoom { transform: scale(1.06); }
+        .product-card { transition: opacity 300ms ease, transform 350ms ease; }
+        .product-card:hover { transform: translateY(-8px); }
+        .product-image { transition: transform 700ms cubic-bezier(.2,.7,.2,1), filter 300ms ease; }
+        .product-card:hover .product-image { transform: scale(1.055); filter: saturate(1.05) contrast(1.04); }
+        .product-card:hover .product-action { background: #000; color: #fff; }
+        .product-card:hover .product-overlay { opacity: 1; transform: translateY(0); }
+        .product-action { transition: all 250ms ease; }
+        .product-overlay { transition: opacity 300ms ease, transform 300ms ease; }
+        .product-badge { transition: transform 250ms ease, opacity 250ms ease; }
+        .product-card:hover .product-badge { transform: translateY(-4px); }
+        .filter-button { transition: color 200ms ease, background-color 200ms ease, border-color 200ms ease; }
+        .filter-button.active { background: #000; border-color: #000; color: #fff; }
+        .product-section.is-hidden { display: none; }
+        .text-balance { text-wrap: balance; }
+        .category-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 35%, rgba(0,0,0,.88) 100%); }
+        .category-card:hover .category-arrow { transform: translateX(8px); }
+        .category-arrow { transition: transform 300ms ease; }
+        .marquee { animation: marquee 24s linear infinite; }
+        @keyframes marquee { to { transform: translateX(-50%); } }
+        @media (max-width: 639px) {
+            .product-section .product-carousel {
+                display: flex;
+                gap: 1rem;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                padding-bottom: 1rem;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .product-section .product-carousel::-webkit-scrollbar {
+                display: none;
+            }
+
+            .product-section .product-carousel .product-card {
+                flex: 0 0 86%;
+                scroll-snap-align: start;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .marquee, .animate-bounce { animation: none; }
+            .reveal { transition: none; }
+        }
+    </style>
+</head>
+<body class="bg-white text-black overflow-x-hidden">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 nav-blur border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="#inicio" class="flex items-center gap-3" aria-label="Tribo da Moda, início">
+                <img src="assets/logo.png" class="w-10 h-10 rounded-full" alt="">
+                <span class="font-display font-bold text-xl tracking-tighter uppercase">Tribo da Moda</span>
+            </a>
+            
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium uppercase tracking-widest">
+                <a href="#categorias" class="nav-link hover:text-gray-500 transition-colors">Categorias</a>
+                <a href="#colecoes" class="nav-link hover:text-gray-500 transition-colors">Coleções</a>
+                <a href="#perfumes" class="nav-link hover:text-gray-500 transition-colors">Perfumes</a>
+                <a href="#contato" class="nav-link hover:text-gray-500 transition-colors">Contato</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button class="md:hidden p-2" id="menuBtn">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="relative min-h-[760px] h-screen w-full flex items-center justify-center overflow-hidden bg-black">
+        <div class="absolute inset-0 opacity-80">
+            <img src="assets/look.png" class="w-full h-full object-cover" alt="Modelo usando um look da Tribo da Moda">
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-r from-black via-black/65 to-black/10"></div>
+        <div class="relative z-10 max-w-5xl px-6 text-center">
+            <span class="text-white uppercase tracking-[0.45em] text-sm mb-6 block">Coleção 2026 · Edição Limitada</span>
+            <h1 class="font-display text-6xl md:text-9xl text-white mb-8 leading-[.88] text-balance">
+                Sua identidade<br><span class="italic">não precisa de acordo.</span>
+            </h1>
+            <p class="mx-auto max-w-2xl text-white/80 text-base md:text-lg mb-10 leading-relaxed">
+                Peças de forte presença, selecionadas para quem entende que o verdadeiro luxo é não seguir o padrão.
+            </p>
+            <div class="flex flex-col md:flex-row items-center justify-center gap-4">
+                <a href="#colecoes" class="bg-white text-black px-10 py-4 rounded-full font-bold uppercase text-xs tracking-widest hover:bg-gray-200 transition-all w-full md:w-auto">
+                    Descobrir a coleção
+                </a>
+                <a href="#categorias" class="border border-white text-white px-10 py-4 rounded-full font-bold uppercase text-xs tracking-widest hover:bg-white hover:text-black transition-all w-full md:w-auto">
+                    Ver categorias
+                </a>
+            </div>
+        </div>
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce text-white">
+            <i data-lucide="chevron-down" class="w-8 h-8"></i>
+        </div>
+    </section>
+
+    <div class="overflow-hidden border-y border-gray-200 bg-white py-4">
+        <div class="marquee flex w-max items-center gap-10 whitespace-nowrap text-xs font-bold uppercase tracking-[0.3em] text-gray-700">
+            <span>Moda feminina</span><span>•</span><span>Streetwear</span><span>•</span><span>Calçados</span><span>•</span><span>Accessorios</span><span>•</span><span>Perfumes</span><span>•</span><span>Moda feminina</span><span>•</span><span>Streetwear</span><span>•</span><span>Calçados</span><span>•</span><span>Accessorios</span><span>•</span><span>Perfumes</span><span>•</span>
+        </div>
+    </div>
+
+    <!-- Categories Grid -->
+    <section id="categorias" class="py-24 px-6 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <a href="#colecoes" class="reveal group category-card relative h-[480px] overflow-hidden rounded-2xl cursor-pointer" data-filter="feminina">
+                <img src="assets/look.png" class="image-zoom w-full h-full object-cover" alt="Looks completos">
+                <div class="absolute inset-0 z-10 flex flex-col justify-end p-8 text-white">
+                    <span class="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">01 · Completo</span>
+                    <h3 class="font-display text-4xl mb-2">Looks Completos</h3>
+                    <p class="max-w-xs text-sm text-white/70">Montagens que transformam uma simples saída em uma presença.</p>
+                    <span class="category-arrow mt-6 flex items-center gap-2 text-xs font-bold uppercase tracking-widest"><i data-lucide="arrow-right" class="w-5 h-5"></i> Explorar</span>
+                </div>
+            </a>
+            <a href="#colecoes" class="reveal group category-card relative h-[480px] overflow-hidden rounded-2xl cursor-pointer" style="transition-delay: 80ms;" data-filter="streetwear">
+                <img src="assets/tenis.png" class="image-zoom w-full h-full object-cover" alt="Tênis e sneakers">
+                <div class="absolute inset-0 z-10 flex flex-col justify-end p-8 text-white">
+                    <span class="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">02 · Calçado</span>
+                    <h3 class="font-display text-4xl mb-2">Tênis & Sneakers</h3>
+                    <p class="max-w-xs text-sm text-white/70">Streetwear com presença, conforto e atitude.</p>
+                    <span class="category-arrow mt-6 flex items-center gap-2 text-xs font-bold uppercase tracking-widest"><i data-lucide="arrow-right" class="w-5 h-5"></i> Explorar</span>
+                </div>
+            </a>
+            <a href="#colecoes" class="reveal group category-card relative h-[480px] overflow-hidden rounded-2xl cursor-pointer" style="transition-delay: 160ms;" data-filter="calcados">
+                <img src="assets/sandalha.png" class="image-zoom w-full h-full object-cover" alt="Sandálias">
+                <div class="absolute inset-0 z-10 flex flex-col justify-end p-8 text-white">
+                    <span class="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">03 · Calçado</span>
+                    <h3 class="font-display text-4xl mb-2">Sandálias</h3>
+                    <p class="max-w-xs text-sm text-white/70">Leveza e sofisticação para cada passo.</p>
+                    <span class="category-arrow mt-6 flex items-center gap-2 text-xs font-bold uppercase tracking-widest"><i data-lucide="arrow-right" class="w-5 h-5"></i> Explorar</span>
+                </div>
+            </a>
+            <a href="#colecoes" class="reveal group category-card relative h-[480px] overflow-hidden rounded-2xl cursor-pointer" style="transition-delay: 240ms;" data-filter="feminina">
+                <img src="assets/lottus.png" class="image-zoom w-full h-full object-cover" alt="Vestidos e conjuntos">
+                <div class="absolute inset-0 z-10 flex flex-col justify-end p-8 text-white">
+                    <span class="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">04 · Feminino</span>
+                    <h3 class="font-display text-4xl mb-2">Vestidos & Sets</h3>
+                    <p class="max-w-xs text-sm text-white/70">Sofisticação em movimento, para noites e ocasiões especiais.</p>
+                    <span class="category-arrow mt-6 flex items-center gap-2 text-xs font-bold uppercase tracking-widest"><i data-lucide="arrow-right" class="w-5 h-5"></i> Explorar</span>
+                </div>
+            </a>
+            <a href="#colecoes" class="reveal group category-card relative h-[480px] overflow-hidden rounded-2xl cursor-pointer" style="transition-delay: 320ms;" data-filter="streetwear">
+                <img src="assets/tenis.png" class="image-zoom w-full h-full object-cover" alt="Acessórios e peças de streetwear">
+                <div class="absolute inset-0 z-10 flex flex-col justify-end p-8 text-white">
+                    <span class="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">05 · Acessórios</span>
+                    <h3 class="font-display text-4xl mb-2">Acessórios</h3>
+                    <p class="max-w-xs text-sm text-white/70">Pontos finais que transformam qualquer composição.</p>
+                    <span class="category-arrow mt-6 flex items-center gap-2 text-xs font-bold uppercase tracking-widest"><i data-lucide="arrow-right" class="w-5 h-5"></i> Explorar</span>
+                </div>
+            </a>
+            <a href="#perfumes" class="reveal group category-card relative h-[480px] overflow-hidden rounded-2xl cursor-pointer" style="transition-delay: 400ms;" data-filter="perfumes">
+                <img src="assets/lottus.png" class="image-zoom w-full h-full object-cover" alt="Linha de perfumes">
+                <div class="absolute inset-0 z-10 flex flex-col justify-end p-8 text-white">
+                    <span class="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">06 · Sensação</span>
+                    <h3 class="font-display text-4xl mb-2">Perfumes</h3>
+                    <p class="max-w-xs text-sm text-white/70">Fragrâncias para acompanhar o seu olhar.</p>
+                    <span class="category-arrow mt-6 flex items-center gap-2 text-xs font-bold uppercase tracking-widest"><i data-lucide="arrow-right" class="w-5 h-5"></i> Explorar</span>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section id="colecoes" class="py-20 sm:py-24 bg-gray-50 px-4 sm:px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid items-end gap-8 mb-10 md:grid-cols-[1fr_auto] md:mb-14 reveal">
+                <div>
+                    <span class="mb-4 block text-xs font-bold uppercase tracking-[0.3em]">Seleção da casa</span>
+                    <h2 class="font-display text-4xl leading-tight sm:text-5xl md:text-7xl">Peças que<br><span class="italic">falam por si.</span></h2>
+                </div>
+                <p class="max-w-sm text-sm leading-relaxed text-gray-500 md:text-right sm:text-base">Uma curadoria de estilos que unem moda, atitude e presença. Nova seleção atualizada a cada semana.</p>
+            </div>
+
+            <div class="mb-10 border-b border-gray-200 pb-6 reveal md:mb-12">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em]">
+                        <span class="h-2 w-2 bg-black"></span>
+                        <span id="productCount">12 peças</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2" role="group" aria-label="Filtrar produtos">
+                        <button class="filter-button active rounded-full border border-gray-300 px-4 py-2 text-[10px] font-bold uppercase tracking-widest" type="button" data-filter="todos">Todos</button>
+                        <button class="filter-button rounded-full border border-gray-300 px-4 py-2 text-[10px] font-bold uppercase tracking-widest" type="button" data-filter="feminina">Moda feminina</button>
+                        <button class="filter-button rounded-full border border-gray-300 px-4 py-2 text-[10px] font-bold uppercase tracking-widest" type="button" data-filter="streetwear">Streetwear</button>
+                        <button class="filter-button rounded-full border border-gray-300 px-4 py-2 text-[10px] font-bold uppercase tracking-widest" type="button" data-filter="calcados">Calçados</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="productSections" class="space-y-14 sm:space-y-16">
+                <section class="product-section" data-category="feminina">
+                    <div class="mb-5 flex items-end justify-between gap-4">
+                        <div>
+                            <span class="mb-2 block text-[10px] font-bold uppercase tracking-[0.25em] text-gray-500">Moda feminina</span>
+                            <h3 class="font-display text-3xl leading-tight">Looks & vestidos</h3>
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-widest text-gray-400">6 peças</span>
+                    </div>
+
+                    <div class="product-carousel grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-8">
+                        <article class="product-card reveal group cursor-pointer" data-category="feminina">
+                            <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-white">
+                                <img src="assets/look.png" class="product-image w-full h-full object-cover" alt="Conjunto Alfaiataria Black" loading="lazy" decoding="async">
+                                <span class="product-badge absolute top-4 left-4 bg-black text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase">Edição 01</span>
+                                <div class="product-overlay absolute inset-0 flex items-end bg-black/65 p-5 opacity-0">
+                                    <span class="flex w-full items-center justify-between border-t border-white/40 pt-4 text-xs font-bold uppercase tracking-widest text-white">Ver detalhe <i data-lucide="arrow-up-right" class="w-4 h-4"></i></span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between gap-4 pt-4">
+                                <div><h3 class="font-medium text-lg">Conjunto Alfaiataria Black</h3><p class="text-gray-500 text-sm">Moda Feminina</p></div>
+                                <p class="font-bold text-lg">R$ 289,90</p>
+                            </div>
+                            <a href="https://wa.me/5500000000000?text=Olá! Gostaria de saber mais sobre o Conjunto Alfaiataria Black" target="_blank" rel="noopener" class="product-action mt-4 flex items-center justify-center gap-2 border border-black py-3 rounded-lg font-bold text-xs uppercase tracking-widest">Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                        </article>
+
+                        <article class="product-card reveal group cursor-pointer" data-category="feminina" style="transition-delay: 70ms;">
+                            <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-white">
+                                <img src="assets/vestido.png" class="product-image w-full h-full object-cover" alt="Vestido Midi Floral" loading="lazy" decoding="async">
+                                <span class="product-badge absolute top-4 left-4 bg-black text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase">Últimas</span>
+                                <div class="product-overlay absolute inset-0 flex items-end bg-black/65 p-5 opacity-0">
+                                    <span class="flex w-full items-center justify-between border-t border-white/40 pt-4 text-xs font-bold uppercase tracking-widest text-white">Ver detalhe <i data-lucide="arrow-up-right" class="w-4 h-4"></i></span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between gap-4 pt-4">
+                                <div><h3 class="font-medium text-lg">Vestido Midi Floral</h3><p class="text-gray-500 text-sm">Moda Feminina</p></div>
+                                <p class="font-bold text-lg">R$ 179,00</p>
+                            </div>
+                            <a href="https://wa.me/5500000000000?text=Olá! Gostaria de saber mais sobre o Vestido Midi Floral" target="_blank" rel="noopener" class="product-action mt-4 flex items-center justify-center gap-2 border border-black py-3 rounded-lg font-bold text-xs uppercase tracking-widest">Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                        </article>
+
+                        <article class="product-card reveal group cursor-pointer" data-category="feminina" style="transition-delay: 140ms;">
+                            <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-white">
+                                <img src="assets/look3.png" class="product-image w-full h-full object-cover" alt="Conjunto Minimalista Preto" loading="lazy" decoding="async">
+                                <span class="product-badge absolute top-4 left-4 bg-white text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase">Curadoria</span>
+                                <div class="product-overlay absolute inset-0 flex items-end bg-black/65 p-5 opacity-0">
+                                    <span class="flex w-full items-center justify-between border-t border-white/40 pt-4 text-xs font-bold uppercase tracking-widest text-white">Ver detalhe <i data-lucide="arrow-up-right" class="w-4 h-4"></i></span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between gap-4 pt-4">
+                                <div><h3 class="font-medium text-lg">Conjunto Minimalista Preto</h3><p class="text-gray-500 text-sm">Moda Feminina</p></div>
+                                <p class="font-bold text-lg">R$ 349,90</p>
+                            </div>
+                            <a href="https://wa.me/5500000000000?text=Olá! Gostaria de saber mais sobre o Conjunto Minimalista Preto" target="_blank" rel="noopener" class="product-action mt-4 flex items-center justify-center gap-2 border border-black py-3 rounded-lg font-bold text-xs uppercase tracking-widest">Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                        </article>
+
+                        <article class="product-card reveal group cursor-pointer" data-category="feminina" style="transition-delay: 210ms;">
+                            <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-white">
+                                <img src="assets/vstido2.png" class="product-image w-full h-full object-cover" alt="Vestido de Cetim Preto" loading="lazy" decoding="async">
+                                <span class="product-badge absolute top-4 left-4 bg-black text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase">Fino</span>
+                                <div class="product-overlay absolute inset-0 flex items-end bg-black/65 p-5 opacity-0">
+                                    <span class="flex w-full items-center justify-between border-t border-white/40 pt-4 text-xs font-bold uppercase tracking-widest text-white">Ver detalhe <i data-lucide="arrow-up-right" class="w-4 h-4"></i></span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between gap-4 pt-4">
+                                <div><h3 class="font-medium text-lg">Vestido de Cetim Preto</h3><p class="text-gray-500 text-sm">Moda Feminina</p></div>
+                                <p class="font-bold text-lg">R$ 419,90</p>
+                            </div>
+                            <a href="https://wa.me/5500000000000?text=Olá! Gostaria de saber mais sobre o Vestido de Cetim Preto" target="_blank" rel="noopener" class="product-action mt-4 flex items-center justify-center gap-2 border border-black py-3 rounded-lg font-bold text-xs uppercase tracking-widest">Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                        </article>
+
+                        <article class="product-card reveal group cursor-pointer" data-category="feminina">
+                            <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-white">
+                                <img src="assets/look2.png" class="product-image w-full h-full object-cover" alt="Conjunto Oversized Preto" loading="lazy" decoding="async">
+                                <span class="product-badge absolute top-4 left-4 bg-white text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase">Street</span>
+                                <div class="product-overlay absolute inset-0 flex items-end bg-black/65 p-5 opacity-0">
+                                    <span class="flex w-full items-center justify-between border-t border-white/40 pt-4 text-xs font-bold uppercase tracking-widest text-white">Ver detalhe <i data-lucide="arrow-up-right" class="w-4 h-4"></i></span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between gap-4 pt-4">
+                                <div><h3 class="font-medium text-lg">Conjunto Oversized Preto</h3><p class="text-gray-500 text-sm">Moda Feminina</p></div>
+                                <p class="font-bold text-lg">R$ 379,90</p>
+                            </div>
+                            <a href="https://wa.me/5500000000000?text=Olá! Gostaria de saber mais sobre o Conjunto Oversized Preto" target="_blank" rel="noopener" class="product-action mt-4 flex items-center justify-center gap-2 border border-black py-3 rounded-lg font-bold text-xs uppercase tracking-widest">Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                        </article>
+
+                        <article class="product-card reveal group cursor-pointer" data-category="feminina" style="transition-delay: 70ms;">
+                            <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-white">
+                                <img src="assets/vestido3.png" class="product-image w-full h-full object-cover" alt="Vestido Preto de Três Posições" loading="lazy" decoding="async">
+                                <span class="product-badge absolute top-4 left-4 bg-black text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase">Clássico</span>
+                                <div class="product-overlay absolute inset-0 flex items-end bg-black/65 p-5 opacity-0">
+                                    <span class="flex w-full items-center justify-between border-t border-white/40 pt-4 text-xs font-bold uppercase tracking-widest text-white">Ver detalhe <i data-lucide="arrow-up-right" class="w-4 h-4"></i></span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between gap-4 pt-4">
+                                <div><h3 class="font-medium text-lg">Vestido Preto de Três Posições</h3><p class="text-gray-500 text-sm">Moda Feminina</p></div>
+                                <p class="font-bold text-lg">R$ 339,90</p>
+                            </div>
+                            <a href="https://wa.me/5500000000000?text=Olá! Gostaria de saber mais sobre o Vestido Preto de Três Posições" target="_blank" rel="noopener" class="product-action mt-4 flex items-center justify-center gap-2 border border-black py-3 rounded-lg font-bold text-xs uppercase tracking-widest">Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="product-section" data-category="streetwear">
+                    <div class="mb-5 flex items-end justify-between gap-4">
+                        <div>
+                            <span class="mb-2 block text-[10px] font-bold uppercase tracking-[0.25em] text-gray-500">Streetwear</span>
+                            <h3 class="font-display text-3xl leading-tight">Tênis</h3>
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-widest text-gray-400">3 peças</span>
+                    </div>
+
+                    <div class="product-carousel grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-8">
+                        <article class="product-card reveal group cursor-pointer" data-category="streetwear">
+                            <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-white">
+                                <img src="assets/tenis.png" class="product-image w-full h-full object-cover" alt="Sneaker Urban White" loading="lazy" decoding="async">
+                                <span class="product-badge absolute top-4 left-4 bg-white text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase">Mais vendido</span>
+                                <div class="product-overlay absolute inset-0 flex items-end bg-black/65 p-5 opacity-0">
+                                    <span class="flex w-full items-center justify-between border-t border-white/40 pt-4 text-xs font-bold uppercase tracking-widest text-white">Ver detalhe <i data-lucide="arrow-up-right" class="w-4 h-4"></i></span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between gap-4 pt-4">
+                                <div><h3 class="font-medium text-lg">Sneaker Urban White</h3><p class="text-gray-500 text-sm">Streetwear</p></div>
+                                <p class="font-bold text-lg">R$ 199,00</p>
+                            </div>
+                            <a href="https://wa.me/5500000000000?text=Olá! Gostaria de saber mais sobre o Sneaker Urban White" target="_blank" rel="noopener" class="product-action mt-4 flex items-center justify-center gap-2 border border-black py-3 rounded-lg font-bold text-xs uppercase tracking-widest">Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                        </article>
+
+                        <article class="product-card reveal group cursor-pointer" data-category="streetwear" style="transition-delay: 70ms;">
+                            <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-white">
+                                <img src="assets/tenis2.png" class="product-image w-full h-full object-cover" alt="Sneaker Branco de Perfil" loading="lazy" decoding="async">
+                                <span class="product-badge absolute top-4 left-4 bg-black text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase">Novo</span>
+                                <div class="product-overlay absolute inset-0 flex items-end bg-black/65 p-5 opacity-0">
+                                    <span class="flex w-full items-center justify-between border-t border-white/40 pt-4 text-xs font-bold uppercase tracking-widest text-white">Ver detalhe <i data-lucide="arrow-up-right" class="w-4 h-4"></i></span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between gap-4 pt-4">
+                                <div><h3 class="font-medium text-lg">Sneaker Branco de Perfil</h3><p class="text-gray-500 text-sm">Streetwear</p></div>
+                                <p class="font-bold text-lg">R$ 229,00</p>
+                            </div>
+                            <a href="https://wa.me/5500000000000?text=Olá! Gostaria de saber mais sobre o Sneaker Branco de Perfil" target="_blank" rel="noopener" class="product-action mt-4 flex items-center justify-center gap-2 border border-black py-3 rounded-lg font-bold text-xs uppercase tracking-widest">Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                        </article>
+
+                        <article class="product-card reveal group cursor-pointer" data-category="streetwear" style="transition-delay: 140ms;">
+                            <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-white">
+                                <img src="assets/tenis3.png" class="product-image w-full h-full object-cover" alt="Sneaker Casual Preto" loading="lazy" decoding="async">
+                                <span class="product-badge absolute top-4 left-4 bg-black text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase">Bestseller</span>
+                                <div class="product-overlay absolute inset-0 flex items-end bg-black/65 p-5 opacity-0">
+                                    <span class="flex w-full items-center justify-between border-t border-white/40 pt-4 text-xs font-bold uppercase tracking-widest text-white">Ver detalhe <i data-lucide="arrow-up-right" class="w-4 h-4"></i></span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between gap-4 pt-4">
+                                <div><h3 class="font-medium text-lg">Sneaker Casual Preto</h3><p class="text-gray-500 text-sm">Streetwear</p></div>
+                                <p class="font-bold text-lg">R$ 219,90</p>
+                            </div>
+                            <a href="https://wa.me/5500000000000?text=Olá! Gostaria de saber mais sobre o Sneaker Casual Preto" target="_blank" rel="noopener" class="product-action mt-4 flex items-center justify-center gap-2 border border-black py-3 rounded-lg font-bold text-xs uppercase tracking-widest">Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="product-section" data-category="calcados">
+                    <div class="mb-5 flex items-end justify-between gap-4">
+                        <div>
+                            <span class="mb-2 block text-[10px] font-bold uppercase tracking-[0.25em] text-gray-500">Calçados</span>
+                            <h3 class="font-display text-3xl leading-tight">Sandálias</h3>
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-widest text-gray-400">3 peças</span>
+                    </div>
+
+                    <div class="product-carousel grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-8">
+                        <article class="product-card reveal group cursor-pointer" data-category="calcados">
+                            <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-white">
+                                <img src="assets/sandalha.png" class="product-image w-full h-full object-cover" alt="Sandália Boho Gold" loading="lazy" decoding="async">
+                                <span class="product-badge absolute top-4 left-4 bg-black text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase">Nova</span>
+                                <div class="product-overlay absolute inset-0 flex items-end bg-black/65 p-5 opacity-0">
+                                    <span class="flex w-full items-center justify-between border-t border-white/40 pt-4 text-xs font-bold uppercase tracking-widest text-white">Ver detalhe <i data-lucide="arrow-up-right" class="w-4 h-4"></i></span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between gap-4 pt-4">
+                                <div><h3 class="font-medium text-lg">Sandália Boho Gold</h3><p class="text-gray-500 text-sm">Calçados</p></div>
+                                <p class="font-bold text-lg">R$ 149,90</p>
+                            </div>
+                            <a href="https://wa.me/5500000000000?text=Olá! Gostaria de saber mais sobre a Sandália Boho Gold" target="_blank" rel="noopener" class="product-action mt-4 flex items-center justify-center gap-2 border border-black py-3 rounded-lg font-bold text-xs uppercase tracking-widest">Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                        </article>
+
+                        <article class="product-card reveal group cursor-pointer" data-category="calcados" style="transition-delay: 70ms;">
+                            <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-white">
+                                <img src="assets/sandalha2.png" class="product-image w-full h-full object-cover" alt="Sandália de Tira Branca" loading="lazy" decoding="async">
+                                <span class="product-badge absolute top-4 left-4 bg-white text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase">Edição 02</span>
+                                <div class="product-overlay absolute inset-0 flex items-end bg-black/65 p-5 opacity-0">
+                                    <span class="flex w-full items-center justify-between border-t border-white/40 pt-4 text-xs font-bold uppercase tracking-widest text-white">Ver detalhe <i data-lucide="arrow-up-right" class="w-4 h-4"></i></span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between gap-4 pt-4">
+                                <div><h3 class="font-medium text-lg">Sandália de Tira Branca</h3><p class="text-gray-500 text-sm">Calçados</p></div>
+                                <p class="font-bold text-lg">R$ 169,90</p>
+                            </div>
+                            <a href="https://wa.me/5500000000000?text=Olá! Gostaria de saber mais sobre a Sandália de Tira Branca" target="_blank" rel="noopener" class="product-action mt-4 flex items-center justify-center gap-2 border border-black py-3 rounded-lg font-bold text-xs uppercase tracking-widest">Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                        </article>
+
+                        <article class="product-card reveal group cursor-pointer" data-category="calcados" style="transition-delay: 140ms;">
+                            <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-white">
+                                <img src="assets/sandalha3.png" class="product-image w-full h-full object-cover" alt="Sandália Flat Preta" loading="lazy" decoding="async">
+                                <span class="product-badge absolute top-4 left-4 bg-white text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase">Essencial</span>
+                                <div class="product-overlay absolute inset-0 flex items-end bg-black/65 p-5 opacity-0">
+                                    <span class="flex w-full items-center justify-between border-t border-white/40 pt-4 text-xs font-bold uppercase tracking-widest text-white">Ver detalhe <i data-lucide="arrow-up-right" class="w-4 h-4"></i></span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between gap-4 pt-4">
+                                <div><h3 class="font-medium text-lg">Sandália Flat Preta</h3><p class="text-gray-500 text-sm">Calçados</p></div>
+                                <p class="font-bold text-lg">R$ 129,90</p>
+                            </div>
+                            <a href="https://wa.me/5500000000000?text=Olá! Gostaria de saber mais sobre a Sandália Flat Preta" target="_blank" rel="noopener" class="product-action mt-4 flex items-center justify-center gap-2 border border-black py-3 rounded-lg font-bold text-xs uppercase tracking-widest">Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                        </article>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </section>
+
+    <!-- Perfume Section -->
+    <section id="perfumes" class="py-24 px-6 bg-black text-white overflow-hidden">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            <div class="reveal relative order-2 lg:order-1">
+                <div class="absolute -top-20 -left-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+                <img src="assets/perfume.png" class="relative z-10 w-full aspect-[4/5] rounded-2xl object-cover shadow-2xl" alt="Linha de perfumes da Tribo da Moda">
+                <div class="absolute -bottom-7 right-6 bg-white text-black p-6 rounded-2xl z-20 max-w-xs sm:right-10">
+                    <p class="font-display text-2xl mb-2">O toque permanece.</p>
+                    <p class="text-gray-600 text-sm">Fragrâncias que completam a experiência da peça.</p>
+                </div>
+            </div>
+            <div class="reveal order-1 lg:order-2">
+                <span class="text-gray-400 uppercase tracking-[0.3em] text-xs mb-5 block">Linha de sensação · Premium</span>
+                <h2 class="font-display text-5xl md:text-7xl mb-7 leading-[.95]">A marca que<br><span class="italic">fica no ar.</span></h2>
+                <p class="text-gray-300 text-lg mb-9 leading-relaxed max-w-xl">
+                    Uma fragrância não precisa ser óbvia. Ela precisa deixar a sensação de presença, de exclusividade e de memorabilidade — mesmo depois de você sair da sala.
+                </p>
+                <div class="grid grid-cols-2 gap-4 mb-10 border-y border-white/20 py-6 text-sm">
+                    <div><span class="block text-gray-500 mb-1 text-[10px] uppercase tracking-widest">Conceito</span><strong>Inteligência sensorial</strong></div>
+                    <div><span class="block text-gray-500 mb-1 text-[10px] uppercase tracking-widest">Experiência</span><strong>Complemento do look</strong></div>
+                </div>
+                <a href="https://wa.me/5500000000000?text=Olá! Gostaria de conhecer a linha de perfumes" target="_blank" class="inline-flex items-center gap-3 bg-white text-black px-9 py-4 rounded-full font-bold uppercase text-xs tracking-widest hover:bg-gray-200 transition-all">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i> Consultar fragrâncias
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-[#f3efee] px-6 py-20 text-[#21191b]">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid gap-10 border-y border-[#21191b]/10 py-12 md:grid-cols-[0.85fr_1fr] md:items-center">
+                <div class="reveal">
+                    <span class="mb-4 block text-[10px] font-bold uppercase tracking-[0.3em] text-[#8f6b70]">Tribo da Moda</span>
+                    <h2 class="font-display text-4xl leading-tight sm:text-5xl md:text-6xl">Detalhes que mudam<br><span class="italic">a presença.</span></h2>
+                </div>
+
+                <div class="grid gap-4 sm:grid-cols-3">
+                    <div class="reveal border-l border-[#21191b]/15 pl-5">
+                        <span class="mb-3 block text-[10px] font-bold uppercase tracking-[0.25em] text-[#8f6b70]">01 · Curadoria</span>
+                        <p class="text-lg font-semibold leading-snug">Peças escolhidas com intenção.</p>
+                    </div>
+                    <div class="reveal border-l border-[#21191b]/15 pl-5" style="transition-delay: 100ms;">
+                        <span class="mb-3 block text-[10px] font-bold uppercase tracking-[0.25em] text-[#8f6b70]">02 · Experiência</span>
+                        <p class="text-lg font-semibold leading-snug">Atendimento próximo e direto.</p>
+                    </div>
+                    <div class="reveal border-l border-[#21191b]/15 pl-5" style="transition-delay: 200ms;">
+                        <span class="mb-3 block text-[10px] font-bold uppercase tracking-[0.25em] text-[#8f6b70]">03 · Presença</span>
+                        <p class="text-lg font-semibold leading-snug">Combinações para marcar o olhar.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contato" class="bg-[#181214] px-6 text-[#f8f4f1]">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid gap-10 border-b border-[#f8f4f1]/10 py-16 lg:grid-cols-[1fr_auto] lg:items-end">
+                <div>
+                    <span class="mb-4 block text-[10px] font-bold uppercase tracking-[0.3em] text-[#c79da3]">Atendimento personalizado</span>
+                    <h2 class="font-display text-4xl leading-tight sm:text-5xl md:text-6xl">Vista sua próxima<br><span class="italic">versão com intenção.</span></h2>
+                </div>
+                <a href="https://wa.me/5500000000000?text=Olá! Gostaria de falar com a Tribo da Moda" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-3 rounded-full bg-[#f8f4f1] px-8 py-4 text-xs font-bold uppercase tracking-widest text-[#181214] transition-all hover:bg-[#e7d7d2]">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                    Falar no WhatsApp
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 gap-12 py-16 md:grid-cols-4">
+                <div class="md:col-span-2">
+                    <div class="mb-6 flex items-center gap-3">
+                        <img src="assets/logo.png" class="w-11 h-11 rounded-full bg-white p-1" alt="">
+                        <span class="font-display text-2xl font-bold uppercase">Tribo da Moda</span>
+                    </div>
+                    <p class="max-w-md text-sm leading-relaxed text-white/60 sm:text-base">
+                        A boutique onde a tendência encontra a personalidade. Vista-se de confiança, vista-se de Tribo da Moda.
+                    </p>
+                    <div class="mt-8 flex gap-3">
+                        <a href="#" class="flex h-11 w-11 items-center justify-center rounded-full border border-[#f8f4f1]/15 text-[#f8f4f1]/70 transition-all hover:border-[#f8f4f1] hover:bg-[#f8f4f1] hover:text-[#181214]" aria-label="Instagram">
+                            <i data-lucide="instagram" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="flex h-11 w-11 items-center justify-center rounded-full border border-[#f8f4f1]/15 text-[#f8f4f1]/70 transition-all hover:border-[#f8f4f1] hover:bg-[#f8f4f1] hover:text-[#181214]" aria-label="Facebook">
+                            <i data-lucide="facebook" class="w-5 h-5"></i>
+                        </a>
+                        <a href="https://wa.me/5500000000000?text=Olá! Gostaria de falar com a Tribo da Moda" target="_blank" rel="noopener" class="flex h-11 w-11 items-center justify-center rounded-full border border-[#f8f4f1]/15 text-[#f8f4f1]/70 transition-all hover:border-[#f8f4f1] hover:bg-[#f8f4f1] hover:text-[#181214]" aria-label="WhatsApp">
+                            <i data-lucide="message-circle" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="mb-6 text-xs font-bold uppercase tracking-widest text-[#f8f4f1]">Links rápidos</h4>
+                    <ul class="space-y-4 text-sm text-[#f8f4f1]/60">
+                        <li><a href="#" class="transition-colors hover:text-[#f8f4f1]">Sobre Nós</a></li>
+                        <li><a href="#" class="transition-colors hover:text-[#f8f4f1]">Política de Trocas</a></li>
+                        <li><a href="#" class="transition-colors hover:text-[#f8f4f1]">Envios e Prazos</a></li>
+                        <li><a href="#" class="transition-colors hover:text-[#f8f4f1]">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="mb-6 text-xs font-bold uppercase tracking-widest text-[#f8f4f1]">Contato</h4>
+                    <ul class="space-y-4 text-sm text-[#f8f4f1]/60">
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="map-pin" class="mt-0.5 w-4 h-4 shrink-0 text-[#c79da3]"></i>
+                            <span>Av. Principal, 123 - Centro</span>
+                        </li>
+                        <li>
+                            <a href="tel:+5511999999999" class="flex items-center gap-3 transition-colors hover:text-[#f8f4f1]">
+                                <i data-lucide="phone" class="w-4 h-4 shrink-0 text-[#c79da3]"></i>
+                                <span>(11) 99999-9999</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="mailto:contato@tribodamoda.com" class="flex items-center gap-3 transition-colors hover:text-[#f8f4f1]">
+                                <i data-lucide="mail" class="w-4 h-4 shrink-0 text-[#c79da3]"></i>
+                                <span>contato@tribodamoda.com</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-center justify-between gap-4 border-t border-[#f8f4f1]/10 py-8 text-center text-[10px] uppercase tracking-widest text-[#f8f4f1]/40 md:flex-row md:text-left">
+                <p>&copy; 2026 Tribo da Moda. Todos os direitos reservados.</p>
+                <p>Design by Boutique Studio</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenu" class="fixed inset-0 z-[60] bg-white translate-x-full transition-transform duration-500 flex flex-col p-8">
+        <button id="closeMenu" class="self-end p-2 mb-12">
+            <i data-lucide="x" class="w-8 h-8"></i>
+        </button>
+        <div class="flex flex-col gap-8 text-3xl font-display">
+            <a href="#categorias" class="hover:italic transition-all">Categorias</a>
+            <a href="#colecoes" class="hover:italic transition-all">Coleções</a>
+            <a href="#perfumes" class="hover:italic transition-all">Perfumes</a>
+            <a href="#contato" class="hover:italic transition-all">Contato</a>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const filterButtons = document.querySelectorAll('.filter-button');
+        const productSections = document.querySelectorAll('.product-section');
+        const productCount = document.getElementById('productCount');
+        const categoryCards = document.querySelectorAll('.category-card');
+
+        function applyProductFilter(filter) {
+            let visibleCount = 0;
+
+            filterButtons.forEach(item => item.classList.toggle('active', item.dataset.filter === filter));
+            productSections.forEach(section => {
+                const isVisible = filter === 'todos' || section.dataset.category === filter;
+                const productCards = section.querySelectorAll('.product-card');
+                const productCarousel = section.querySelector('.product-carousel');
+
+                section.classList.toggle('is-hidden', !isVisible);
+
+                if (isVisible) {
+                    visibleCount += productCards.length;
+                    if (productCarousel) productCarousel.scrollLeft = 0;
+                }
+            });
+
+            productCount.textContent = `${visibleCount} ${visibleCount === 1 ? 'peça' : 'peças'}`;
+        }
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                applyProductFilter(button.dataset.filter);
+            });
+        });
+
+        categoryCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const filter = card.dataset.filter;
+                if (filter && filter !== 'perfumes') applyProductFilter(filter);
+            });
+        });
+
+        const revealElements = document.querySelectorAll('.reveal');
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+            revealElements.forEach(element => element.classList.add('active'));
+        } else {
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.12,
+                rootMargin: '0px 0px -8% 0px'
+            });
+
+            revealElements.forEach(element => revealObserver.observe(element));
+        }
+
+        const menuBtn = document.getElementById('menuBtn');
+        const closeMenu = document.getElementById('closeMenu');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+
+        function setMenu(open) {
+            mobileMenu.classList.toggle('translate-x-full', !open);
+            document.body.style.overflow = open ? 'hidden' : '';
+        }
+
+        menuBtn.addEventListener('click', () => setMenu(true));
+        closeMenu.addEventListener('click', () => setMenu(false));
+        mobileMenuLinks.forEach(link => link.addEventListener('click', () => setMenu(false)));
+
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape') setMenu(false);
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
