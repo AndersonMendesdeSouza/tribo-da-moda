@@ -104,6 +104,11 @@
             flex: 0 0 82%;
         }
         .showcase-carousel .showcase-card { min-width: 0; }
+        .category-card img,
+        .product-card img,
+        .look-card img,
+        .perfume-card img,
+        .showcase-card img { object-position: center top; }
         .look-card img,
         .perfume-card img,
         .showcase-card img { transition: transform 700ms cubic-bezier(.2,.7,.2,1); }
@@ -161,10 +166,10 @@
             <img src="assets/banner2.png" class="h-full w-full object-cover md:hidden" alt="Modelo usando um look da Tribo da Moda">
         </div>
         <div class="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-black/10 md:from-black/75 md:via-black/25 md:to-transparent"></div>
-        <div class="absolute bottom-24 left-4 right-4 z-10 flex w-auto max-w-md flex-col text-left md:bottom-0 md:left-0 md:mb-16 md:right-auto md:w-full md:max-w-xl md:px-0 md:text-left lg:mb-20 lg:px-12">
+        <div class="absolute bottom-24 left-1/2 z-10 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 flex-col rounded-[1.5rem] bg-withe/35 p-5 text-left shadow-[0_24px_70px_rgba(0,0,0,0.35)] backdrop-blur-sm md:bottom-0 md:left-0 md:mb-16 md:right-auto md:w-full md:max-w-xl md:translate-x-0 md:p-8 md:text-left lg:mb-20 lg:p-10">
             <span class="mb-4 block text-[10px] uppercase tracking-[0.4em] text-white sm:text-xs">Coleção 2026 · Edição Limitada</span>
             <h1 class="mb-5 font-display text-[2.65rem] leading-[.92] text-white md:text-6xl lg:text-7xl">
-                Sua identidade<br><span class="italic text-[#c8b7b7]">é sua maior força.</span>
+                Sua identidade<br><span class="italic text-[#c0b8b1]">é sua maior força.</span>
             </h1>
             <p class="mb-6 max-w-sm text-xs leading-relaxed text-white/80 md:max-w-xl md:text-base md:leading-relaxed md:text-lg">
                 Peças de forte presença, selecionadas para quem entende que o verdadeiro luxo é não seguir o padrão.
@@ -213,10 +218,10 @@
                     <span class="category-arrow mt-6 flex items-center gap-2 text-xs font-bold uppercase tracking-widest"><i data-lucide="arrow-right" class="w-5 h-5"></i> Explorar</span>
                 </div>
             </a>
-            <a href="#colecoes" class="reveal group category-card relative h-[440px] overflow-hidden rounded-2xl cursor-pointer sm:h-[480px]" style="transition-delay: 160ms;" data-filter="calcados">
+            <a href="#colecoes" class="reveal group category-card relative h-[440px] overflow-hidden rounded-2xl cursor-pointer sm:h-[480px]" style="transition-delay: 160ms;" data-filter="sandalias">
                 <img src="assets/sandalha.png" class="image-zoom w-full h-full object-cover" alt="Sandálias">
                 <div class="absolute inset-0 z-10 flex flex-col justify-end p-8 text-white">
-                    <span class="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">03 · Calçado</span>
+                    <span class="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">03 · Sandálias</span>
                     <h3 class="font-display text-4xl mb-2">Sandálias</h3>
                     <p class="max-w-xs text-sm text-white/70">Leveza e sofisticação para cada passo.</p>
                     <span class="category-arrow mt-6 flex items-center gap-2 text-xs font-bold uppercase tracking-widest"><i data-lucide="arrow-right" class="w-5 h-5"></i> Explorar</span>
@@ -252,8 +257,8 @@
         </div>
     </section>
 
-    <section class="border-y border-gray-200 bg-white px-6 py-10" aria-label="Marca Tribo da Moda">
-        <div class="mx-auto flex max-w-7xl items-center justify-center gap-5">
+    <section class="border-y border-gray-200 bg-[#f1f1ef] px-6 py-10" aria-label="Marca Tribo da Moda">
+        <div class="mx-auto flex max-w-7xl items-center justify-center gap-5" style="width: 70%; height: 12vh; border-radius: 100px; background-color: #fff;">
             <span class="h-px w-16 bg-gray-300"></span>
             <img src="assets/logo.png" class="h-14 w-14 rounded-full bg-white p-1" alt="Logo da Tribo da Moda">
             <span class="font-display text-2xl font-bold uppercase tracking-tight sm:text-3xl">Tribo da Moda</span>
@@ -321,7 +326,7 @@
                         <button class="filter-button rounded-full border border-gray-300 px-4 py-2 text-[10px] font-bold uppercase tracking-widest" type="button" data-filter="feminina">Moda feminina</button>
                         <button class="filter-button rounded-full border border-gray-300 px-4 py-2 text-[10px] font-bold uppercase tracking-widest" type="button" data-filter="masculino">Moda masculina</button>
                         <button class="filter-button rounded-full border border-gray-300 px-4 py-2 text-[10px] font-bold uppercase tracking-widest" type="button" data-filter="tenis">Tênis</button>
-                        <button class="filter-button rounded-full border border-gray-300 px-4 py-2 text-[10px] font-bold uppercase tracking-widest" type="button" data-filter="calcados">Calçados</button>
+                        <button class="filter-button rounded-full border border-gray-300 px-4 py-2 text-[10px] font-bold uppercase tracking-widest" type="button" data-filter="sandalias">Sandálias</button>
                     </div>
                 </div>
             </div>
@@ -543,17 +548,17 @@
                     </div>
                 </section>
 
-                <section class="product-section" data-category="calcados">
+                <section class="product-section" data-category="sandalias">
                     <div class="mb-5 flex items-end justify-between gap-4">
                         <div>
-                            <span class="mb-2 block text-[10px] font-bold uppercase tracking-[0.25em] text-gray-500">Calçados</span>
+                            <span class="mb-2 block text-[10px] font-bold uppercase tracking-[0.25em] text-gray-500">Sandálias</span>
                             <h3 class="font-display text-3xl leading-tight">Sandálias</h3>
                         </div>
                         <span class="text-xs font-bold uppercase tracking-widest text-gray-400">3 peças</span>
                     </div>
 
                     <div class="product-carousel">
-                        <article class="product-card reveal group cursor-pointer" data-category="calcados">
+                        <article class="product-card reveal group cursor-pointer" data-category="sandalias">
                             <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-white">
                                 <img src="assets/sandalha.png" class="product-image w-full h-full object-cover" alt="Sandália Boho Dourada" loading="lazy" decoding="async">
                                 <span class="product-badge absolute top-4 left-4 bg-black text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase">Nova</span>
@@ -562,13 +567,13 @@
                                 </div>
                             </div>
                             <div class="flex justify-between gap-4 pt-4">
-                                <div><h3 class="font-medium text-lg">Sandália Boho Dourada</h3><p class="text-gray-500 text-sm">Calçados</p></div>
+                                <div><h3 class="font-medium text-lg">Sandália Boho Dourada</h3><p class="text-gray-500 text-sm">Sandálias</p></div>
                                 <p class="font-bold text-lg">R$ 149,90</p>
                             </div>
                             <a href="#" data-whatsapp-message="Olá! Gostaria de saber mais sobre a Sandália Boho Dourada" target="_blank" rel="noopener" class="product-action mt-4 flex items-center justify-center gap-2 border border-black py-3 rounded-lg font-bold text-xs uppercase tracking-widest">Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                         </article>
 
-                        <article class="product-card reveal group cursor-pointer" data-category="calcados" style="transition-delay: 70ms;">
+                        <article class="product-card reveal group cursor-pointer" data-category="sandalias" style="transition-delay: 70ms;">
                             <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-white">
                                 <img src="assets/sandalha2.png" class="product-image w-full h-full object-cover" alt="Sandália de Tira Branca" loading="lazy" decoding="async">
                                 <span class="product-badge absolute top-4 left-4 bg-white text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase">Edição 02</span>
@@ -577,13 +582,13 @@
                                 </div>
                             </div>
                             <div class="flex justify-between gap-4 pt-4">
-                                <div><h3 class="font-medium text-lg">Sandália de Tira Branca</h3><p class="text-gray-500 text-sm">Calçados</p></div>
+                                <div><h3 class="font-medium text-lg">Sandália de Tira Branca</h3><p class="text-gray-500 text-sm">Sandálias</p></div>
                                 <p class="font-bold text-lg">R$ 169,90</p>
                             </div>
                             <a href="#" data-whatsapp-message="Olá! Gostaria de saber mais sobre a Sandália de Tira Branca" target="_blank" rel="noopener" class="product-action mt-4 flex items-center justify-center gap-2 border border-black py-3 rounded-lg font-bold text-xs uppercase tracking-widest">Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                         </article>
 
-                        <article class="product-card reveal group cursor-pointer" data-category="calcados" style="transition-delay: 140ms;">
+                        <article class="product-card reveal group cursor-pointer" data-category="sandalias" style="transition-delay: 140ms;">
                             <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-white">
                                 <img src="assets/sandalha3.png" class="product-image w-full h-full object-cover" alt="Sandália Flat Preta" loading="lazy" decoding="async">
                                 <span class="product-badge absolute top-4 left-4 bg-white text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase">Essencial</span>
@@ -592,7 +597,7 @@
                                 </div>
                             </div>
                             <div class="flex justify-between gap-4 pt-4">
-                                <div><h3 class="font-medium text-lg">Sandália Flat Preta</h3><p class="text-gray-500 text-sm">Calçados</p></div>
+                                <div><h3 class="font-medium text-lg">Sandália Flat Preta</h3><p class="text-gray-500 text-sm">Sandálias</p></div>
                                 <p class="font-bold text-lg">R$ 129,90</p>
                             </div>
                             <a href="#" data-whatsapp-message="Olá! Gostaria de saber mais sobre a Sandália Flat Preta" target="_blank" rel="noopener" class="product-action mt-4 flex items-center justify-center gap-2 border border-black py-3 rounded-lg font-bold text-xs uppercase tracking-widest">Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
