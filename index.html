@@ -10,19 +10,34 @@
     <style>
         html { scroll-behavior: smooth;}
         body { font-family: 'Inter', sans-serif; }
+        :root { --header-height: 5rem; }
         .font-display { font-family: 'Playfair Display', serif; }
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
         .reveal.active { opacity: 1; transform: translateY(0); }
         .nav-blur { backdrop-filter: blur(12px); background-color: rgba(255, 255, 255, 0.9); }
         .image-zoom { transition: transform 700ms cubic-bezier(.2,.7,.2,1); }
         .group:hover .image-zoom { transform: scale(1.06); }
+        .product-card,
+        .showcase-card { position: relative; display: flex; flex-direction: column; height: 560px; min-width: 0; }
         .product-card { transition: opacity 300ms ease, transform 350ms ease; }
         .product-card:hover { transform: translateY(-8px); }
         .product-image { transition: transform 700ms cubic-bezier(.2,.7,.2,1), filter 300ms ease; }
         .product-card:hover .product-image { transform: scale(1.055); filter: saturate(1.05) contrast(1.04); }
         .product-card:hover .product-action { background: #000; color: #fff; }
         .product-card:hover .product-overlay { opacity: 1; transform: translateY(0); }
-        .product-action { transition: all 250ms ease; }
+        .product-action { position: absolute; right: 0; bottom: 0; left: 0; z-index: 10; transition: all 250ms ease; }
+        .product-card > div.relative { height: 380px; flex: 0 0 380px; }
+        .product-card > div.flex.justify-between { min-width: 0; }
+        .product-card > div.flex.justify-between > div { min-width: 0; }
+        .product-card > div.flex.justify-between > p { flex-shrink: 0; }
+        .showcase-card > div:first-child { height: 390px; flex: 0 0 390px; }
+        .showcase-card > div:nth-child(2) { flex: 1; padding-bottom: 76px; }
+        .showcase-card .product-action { right: 1.25rem; bottom: 1.25rem; left: 1.25rem; }
+        .showcase-card .product-action:hover,
+        .showcase-card .product-action:focus-visible { background: #000; color: #fff; border-color: #000; }
+        .showcase-card .product-action i { transition: transform 250ms ease; }
+        .showcase-card .product-action:hover i,
+        .showcase-card .product-action:focus-visible i { transform: translateX(4px); }
         .product-overlay { transition: opacity 300ms ease, transform 300ms ease; }
         .product-badge { transition: transform 250ms ease, opacity 250ms ease; }
         .product-card:hover .product-badge { transform: translateY(-4px); }
@@ -33,8 +48,13 @@
         .category-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 35%, rgba(0,0,0,.88) 100%); }
         .category-card:hover .category-arrow { transform: translateX(8px); }
         .category-arrow { transition: transform 300ms ease; }
-        .marquee { animation: marquee 24s linear infinite; }
-        @keyframes marquee { to { transform: translateX(-50%); } }
+        .category-strip { background: linear-gradient(90deg, #fff 0%, #f7f3f2 50%, #fff 100%); }
+        .category-strip-link {
+            border: 1px solid rgba(0, 0, 0, 0.12);
+            background: #fff;
+            transition: color 200ms ease, background-color 200ms ease, border-color 200ms ease, transform 200ms ease;
+        }
+        .category-strip-link:hover { color: #fff; background: #181214; border-color: #181214; transform: translateY(-2px); }
         .product-carousel {
             display: flex;
             width: 100%;
@@ -45,7 +65,7 @@
             scrollbar-width: none;
             overscroll-behavior-x: contain;
             -webkit-overflow-scrolling: touch;
-            touch-action: pan-y;
+            touch-action: pan-x pan-y;
         }
         .product-carousel::-webkit-scrollbar { display: none; }
         .product-carousel .product-card {
@@ -72,7 +92,7 @@
             display: flex;
             width: 100%;
             overscroll-behavior-x: contain;
-            touch-action: pan-y;
+            touch-action: pan-x pan-y;
         }
         .look-carousel::-webkit-scrollbar,
         .perfume-carousel::-webkit-scrollbar,
@@ -99,8 +119,12 @@
         @media (min-width: 1280px) {
             .showcase-carousel .showcase-card { flex-basis: 21%; }
         }
+        .hero-media {
+            top: var(--header-height);
+            height: calc(100% - var(--header-height));
+        }
         @media (prefers-reduced-motion: reduce) {
-            .marquee, .animate-bounce, .look-carousel, .perfume-carousel, .showcase-carousel { animation: none; scroll-behavior: auto; }
+            .animate-bounce, .look-carousel, .perfume-carousel, .showcase-carousel { animation: none; scroll-behavior: auto; }
             .reveal { transition: none; }
         }
     </style>
@@ -111,7 +135,7 @@
     <nav class="fixed top-0 w-full z-50 nav-blur border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <a href="#inicio" class="flex items-center gap-3" aria-label="Tribo da Moda, início">
-                <img src="assets/logo.png" class="w-10 h-10 rounded-full" alt="">
+                <img src="assets/logo.png" class="w-12 h-12 rounded-full object-contain" alt="">
                 <span class="font-display font-bold text-xl tracking-tighter uppercase">Tribo da Moda</span>
             </a>
             
@@ -131,43 +155,47 @@
     </nav>
 
     <!-- Hero Section -->
-    <section id="inicio" class="relative min-h-[760px] h-screen w-full flex items-center justify-center overflow-hidden bg-black">
-        <div class="absolute inset-0 opacity-80">
-            <img src="assets/look.png" class="w-full h-full object-cover" alt="Modelo usando um look da Tribo da Moda">
+    <section id="inicio" class="relative min-h-[800px] h-screen w-full flex items-center justify-center overflow-hidden bg-black">
+        <div class="hero-media absolute inset-x-0 opacity-90">
+            <img src="assets/banner.png" class="hidden h-full w-full object-cover object-[center_18%] md:block" alt="Modelo usando um look da Tribo da Moda">
+            <img src="assets/banner2.png" class="h-full w-full object-cover md:hidden" alt="Modelo usando um look da Tribo da Moda">
         </div>
-        <div class="absolute inset-0 bg-gradient-to-r from-black via-black/65 to-black/10"></div>
-        <div class="relative z-10 max-w-5xl px-6 text-center">
-            <span class="text-white uppercase tracking-[0.45em] text-sm mb-6 block">Coleção 2026 · Edição Limitada</span>
-            <h1 class="font-display text-6xl md:text-9xl text-white mb-8 leading-[.88] text-balance">
-                Sua identidade<br><span class="italic">não precisa de acordo.</span>
+        <div class="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-black/10 md:from-black/75 md:via-black/25 md:to-transparent"></div>
+        <div class="absolute bottom-24 left-4 right-4 z-10 flex w-auto max-w-md flex-col text-left md:bottom-0 md:left-0 md:mb-16 md:right-auto md:w-full md:max-w-xl md:px-0 md:text-left lg:mb-20 lg:px-12">
+            <span class="mb-4 block text-[10px] uppercase tracking-[0.4em] text-white sm:text-xs">Coleção 2026 · Edição Limitada</span>
+            <h1 class="mb-5 font-display text-[2.65rem] leading-[.92] text-white md:text-6xl lg:text-7xl">
+                Sua identidade<br><span class="italic text-[#c8b7b7]">é sua maior força.</span>
             </h1>
-            <p class="mx-auto max-w-2xl text-white/80 text-base md:text-lg mb-10 leading-relaxed">
+            <p class="mb-6 max-w-sm text-xs leading-relaxed text-white/80 md:max-w-xl md:text-base md:leading-relaxed md:text-lg">
                 Peças de forte presença, selecionadas para quem entende que o verdadeiro luxo é não seguir o padrão.
             </p>
-            <div class="flex flex-col md:flex-row items-center justify-center gap-4">
-                <a href="#colecoes" class="bg-white text-black px-10 py-4 rounded-full font-bold uppercase text-xs tracking-widest hover:bg-gray-200 transition-all w-full md:w-auto">
+            <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-start">
+                <a href="#colecoes" class="inline-flex w-full whitespace-nowrap items-center justify-center gap-3 rounded-full bg-white px-8 py-3.5 text-[11px] font-bold uppercase tracking-widest text-black shadow-lg shadow-black/20 transition-all duration-300 hover:-translate-y-1 hover:bg-gray-200 hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white md:w-auto md:px-10 md:py-4 md:text-xs">
                     Descobrir a coleção
+                    <i data-lucide="arrow-right" class="h-4 w-4 transition-transform duration-300 hover:translate-x-1"></i>
                 </a>
-                <a href="#categorias" class="border border-white text-white px-10 py-4 rounded-full font-bold uppercase text-xs tracking-widest hover:bg-white hover:text-black transition-all w-full md:w-auto">
+                <a href="#categorias" class="inline-flex w-full whitespace-nowrap items-center justify-center gap-3 rounded-full border border-white px-8 py-3.5 text-[11px] font-bold uppercase tracking-widest text-white transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white md:w-auto md:px-10 md:py-4 md:text-xs">
                     Ver categorias
                 </a>
             </div>
         </div>
-        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce text-white">
-            <i data-lucide="chevron-down" class="w-8 h-8"></i>
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce text-white md:hidden">
+            <i data-lucide="chevron-down" class="h-8 w-8"></i>
         </div>
     </section>
 
-    <div class="overflow-hidden border-y border-gray-200 bg-white py-4">
-        <div class="marquee flex w-max items-center gap-10 whitespace-nowrap text-xs font-bold uppercase tracking-[0.3em] text-gray-700">
-            <span>Moda feminina</span><span>•</span><span>Moda masculina</span><span>•</span><span>Moda de rua</span><span>•</span><span>Calçados</span><span>•</span><span>Perfumes</span><span>•</span><span>Moda feminina</span><span>•</span><span>Moda masculina</span><span>•</span><span>Moda de rua</span><span>•</span><span>Calçados</span><span>•</span><span>Perfumes</span><span>•</span>
-        </div>
-    </div>
-
     <!-- Categories Grid -->
-    <section id="categorias" class="py-24 px-6 max-w-7xl mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <a href="#colecoes" class="reveal group category-card relative h-[480px] overflow-hidden rounded-2xl cursor-pointer" data-filter="feminina">
+    <section id="categorias" class="bg-[#f1f1ef] px-4 py-20 text-[#21191b] sm:px-6 sm:py-24">
+        <div class="mx-auto max-w-7xl">
+            <div class="mb-10 flex flex-col gap-5 sm:mb-14 sm:flex-row sm:items-end sm:justify-between reveal">
+                <div>
+                    <span class="mb-4 block text-xs font-bold uppercase tracking-[0.3em] text-[#6f6a68]">Explore por estilo</span>
+                    <h2 class="font-display text-4xl leading-tight sm:text-6xl">Categorias <span class="italic text-[#6f6a68]">que se adaptam</span></h2>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 sm:gap-6">
+            <a href="#colecoes" class="reveal group category-card relative h-[440px] overflow-hidden rounded-2xl cursor-pointer sm:h-[480px]" data-filter="feminina">
                 <img src="assets/look.png" class="image-zoom w-full h-full object-cover" alt="Looks completos">
                 <div class="absolute inset-0 z-10 flex flex-col justify-end p-8 text-white">
                     <span class="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">01 · Completo</span>
@@ -176,16 +204,16 @@
                     <span class="category-arrow mt-6 flex items-center gap-2 text-xs font-bold uppercase tracking-widest"><i data-lucide="arrow-right" class="w-5 h-5"></i> Explorar</span>
                 </div>
             </a>
-            <a href="#colecoes" class="reveal group category-card relative h-[480px] overflow-hidden rounded-2xl cursor-pointer" style="transition-delay: 80ms;" data-filter="streetwear">
+            <a href="#colecoes" class="reveal group category-card relative h-[440px] overflow-hidden rounded-2xl cursor-pointer sm:h-[480px]" style="transition-delay: 80ms;" data-filter="tenis">
                 <img src="assets/tenis.png" class="image-zoom w-full h-full object-cover" alt="Tênis">
                 <div class="absolute inset-0 z-10 flex flex-col justify-end p-8 text-white">
                     <span class="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">02 · Calçado</span>
                     <h3 class="font-display text-4xl mb-2">Tênis</h3>
-                    <p class="max-w-xs text-sm text-white/70">Moda de rua com presença, conforto e atitude.</p>
+                    <p class="max-w-xs text-sm text-white/70">Tênis com presença, conforto e atitude.</p>
                     <span class="category-arrow mt-6 flex items-center gap-2 text-xs font-bold uppercase tracking-widest"><i data-lucide="arrow-right" class="w-5 h-5"></i> Explorar</span>
                 </div>
             </a>
-            <a href="#colecoes" class="reveal group category-card relative h-[480px] overflow-hidden rounded-2xl cursor-pointer" style="transition-delay: 160ms;" data-filter="calcados">
+            <a href="#colecoes" class="reveal group category-card relative h-[440px] overflow-hidden rounded-2xl cursor-pointer sm:h-[480px]" style="transition-delay: 160ms;" data-filter="calcados">
                 <img src="assets/sandalha.png" class="image-zoom w-full h-full object-cover" alt="Sandálias">
                 <div class="absolute inset-0 z-10 flex flex-col justify-end p-8 text-white">
                     <span class="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">03 · Calçado</span>
@@ -194,7 +222,7 @@
                     <span class="category-arrow mt-6 flex items-center gap-2 text-xs font-bold uppercase tracking-widest"><i data-lucide="arrow-right" class="w-5 h-5"></i> Explorar</span>
                 </div>
             </a>
-            <a href="#colecoes" class="reveal group category-card relative h-[480px] overflow-hidden rounded-2xl cursor-pointer" style="transition-delay: 240ms;" data-filter="feminina">
+            <a href="#colecoes" class="reveal group category-card relative h-[440px] overflow-hidden rounded-2xl cursor-pointer sm:h-[480px]" style="transition-delay: 240ms;" data-filter="feminina">
                 <img src="assets/vestido.png" class="image-zoom w-full h-full object-cover" alt="Vestidos">
                 <div class="absolute inset-0 z-10 flex flex-col justify-end p-8 text-white">
                     <span class="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">04 · Feminino</span>
@@ -203,7 +231,7 @@
                     <span class="category-arrow mt-6 flex items-center gap-2 text-xs font-bold uppercase tracking-widest"><i data-lucide="arrow-right" class="w-5 h-5"></i> Explorar</span>
                 </div>
             </a>
-            <a href="#catalogo-masculino" class="reveal group category-card relative h-[480px] overflow-hidden rounded-2xl cursor-pointer" style="transition-delay: 320ms;" data-filter="masculino">
+            <a href="#catalogo-masculino" class="reveal group category-card relative h-[440px] overflow-hidden rounded-2xl cursor-pointer sm:h-[480px]" style="transition-delay: 320ms;" data-filter="masculino">
                 <img src="assets/lookmasculino.png" class="image-zoom w-full h-full object-cover" alt="Looks masculinos">
                 <div class="absolute inset-0 z-10 flex flex-col justify-end p-8 text-white">
                     <span class="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">05 · Masculino</span>
@@ -212,7 +240,7 @@
                     <span class="category-arrow mt-6 flex items-center gap-2 text-xs font-bold uppercase tracking-widest"><i data-lucide="arrow-right" class="w-5 h-5"></i> Explorar</span>
                 </div>
             </a>
-            <a href="#perfumes" class="reveal group category-card relative h-[480px] overflow-hidden rounded-2xl cursor-pointer" style="transition-delay: 400ms;" data-filter="perfumes">
+            <a href="#perfumes" class="reveal group category-card relative h-[440px] overflow-hidden rounded-2xl cursor-pointer sm:h-[480px]" style="transition-delay: 400ms;" data-filter="perfumes">
                 <img src="assets/perfume.png" class="image-zoom w-full h-full object-cover" alt="Linha de perfumes">
                 <div class="absolute inset-0 z-10 flex flex-col justify-end p-8 text-white">
                     <span class="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">06 · Sensação</span>
@@ -233,36 +261,40 @@
         </div>
     </section>
 
-    <section id="vitrine-da-semana" class="bg-[#f3efee] px-4 py-20 text-[#21191b] sm:px-6 sm:py-24">
+    <section id="vitrine-da-semana" class="bg-[#f1f1ef] px-4 py-20 text-[#21191b] sm:px-6 sm:py-24">
         <div class="mx-auto max-w-7xl">
             <div class="mb-10 flex flex-col gap-5 sm:mb-14 sm:flex-row sm:items-end sm:justify-between reveal">
                 <div>
-                    <span class="mb-4 block text-xs font-bold uppercase tracking-[0.3em] text-[#8f6b70]">Edição da semana</span>
-                    <h2 class="font-display text-4xl leading-tight sm:text-6xl">Vitrine da <span class="italic text-[#8f6b70]">semana</span></h2>
-                </div>
-                <div class="flex gap-3 reveal">
-                    <button type="button" class="showcase-prev flex h-12 w-12 items-center justify-center rounded-full border border-black/20 transition-colors hover:bg-black hover:text-white" aria-label="Anterior produto"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
-                    <button type="button" class="showcase-next flex h-12 w-12 items-center justify-center rounded-full border border-black/20 transition-colors hover:bg-black hover:text-white" aria-label="Próximo produto"><i data-lucide="arrow-right" class="w-5 h-5"></i></button>
+                    <span class="mb-4 block text-xs font-bold uppercase tracking-[0.3em] text-[#6f6a68]">Edição da semana</span>
+                    <h2 class="font-display text-4xl leading-tight sm:text-6xl">Vitrine da <span class="italic text-[#6f6a68]">semana</span></h2>
                 </div>
             </div>
 
             <div class="showcase-carousel reveal flex snap-x gap-4 overflow-x-auto pb-4 sm:gap-6" data-carousel="showcase">
-                <article class="showcase-card group min-w-[82%] overflow-hidden rounded-2xl bg-white sm:min-w-[48%] lg:min-w-0 xl:min-w-0">
+                <article class="showcase-card group min-w-[82%] overflow-hidden rounded-2xl bg-white sm:min-w-[48%] lg:min-w-[31%] xl:min-w-[27%]">
                     <div class="aspect-[4/5] overflow-hidden"><img src="assets/lookmasculino2.png" class="h-full w-full object-cover" alt="Look masculino de edição especial" loading="lazy" decoding="async"></div>
                     <div class="p-5"><h3 class="font-display text-2xl">Look Masculino</h3><p class="mt-2 text-sm text-gray-500">Estilo direto e moderno.</p></div>
+                    <a href="#" data-whatsapp-message="Olá! Gostaria de saber mais sobre o Look Masculino da semana" target="_blank" rel="noopener" class="product-action flex items-center justify-center gap-2 border border-black py-3 rounded-lg font-bold text-xs uppercase tracking-widest">Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                 </article>
-                <article class="showcase-card group min-w-[82%] overflow-hidden rounded-2xl bg-white sm:min-w-[48%] lg:min-w-0 xl:min-w-0">
+                <article class="showcase-card group min-w-[82%] overflow-hidden rounded-2xl bg-white sm:min-w-[48%] lg:min-w-[31%] xl:min-w-[27%]">
                     <div class="aspect-[4/5] overflow-hidden"><img src="assets/vestido3.png" class="h-full w-full object-cover" alt="Vestido de edição especial" loading="lazy" decoding="async"></div>
                     <div class="p-5"><h3 class="font-display text-2xl">Vestido de Edição</h3><p class="mt-2 text-sm text-gray-500">Uma peça para marcar presença.</p></div>
+                    <a href="#" data-whatsapp-message="Olá! Gostaria de saber mais sobre o Vestido de Edição da semana" target="_blank" rel="noopener" class="product-action flex items-center justify-center gap-2 border border-black py-3 rounded-lg font-bold text-xs uppercase tracking-widest">Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                 </article>
-                <article class="showcase-card group min-w-[82%] overflow-hidden rounded-2xl bg-white sm:min-w-[48%] lg:min-w-0 xl:min-w-0">
+                <article class="showcase-card group min-w-[82%] overflow-hidden rounded-2xl bg-white sm:min-w-[48%] lg:min-w-[31%] xl:min-w-[27%]">
                     <div class="aspect-[4/5] overflow-hidden"><img src="assets/sandalha2.png" class="h-full w-full object-cover" alt="Sandália de edição especial" loading="lazy" decoding="async"></div>
                     <div class="p-5"><h3 class="font-display text-2xl">Sandália de Tira</h3><p class="mt-2 text-sm text-gray-500">Conforto com atitude.</p></div>
+                    <a href="#" data-whatsapp-message="Olá! Gostaria de saber mais sobre a Sandália de Tira da semana" target="_blank" rel="noopener" class="product-action flex items-center justify-center gap-2 border border-black py-3 rounded-lg font-bold text-xs uppercase tracking-widest">Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                 </article>
-                <article class="showcase-card group min-w-[82%] overflow-hidden rounded-2xl bg-white sm:min-w-[48%] lg:min-w-0 xl:min-w-0">
+                <article class="showcase-card group min-w-[82%] overflow-hidden rounded-2xl bg-white sm:min-w-[48%] lg:min-w-[31%] xl:min-w-[27%]">
                     <div class="aspect-[4/5] overflow-hidden"><img src="assets/perfume2.png" class="h-full w-full object-cover" alt="Fragrância de edição especial" loading="lazy" decoding="async"></div>
                     <div class="p-5"><h3 class="font-display text-2xl">Fragrância de Presença</h3><p class="mt-2 text-sm text-gray-500">Para ficar na memória.</p></div>
+                    <a href="#" data-whatsapp-message="Olá! Gostaria de saber mais sobre a Fragrância de Presença da semana" target="_blank" rel="noopener" class="product-action flex items-center justify-center gap-2 border border-black py-3 rounded-lg font-bold text-xs uppercase tracking-widest">Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                 </article>
+            </div>
+            <div class="mt-6 hidden justify-end gap-3 reveal md:flex">
+                <button type="button" class="showcase-prev flex h-12 w-12 items-center justify-center rounded-full border border-black/20 transition-colors hover:bg-black hover:text-white" aria-label="Anterior produto"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+                <button type="button" class="showcase-next flex h-12 w-12 items-center justify-center rounded-full border border-black/20 transition-colors hover:bg-black hover:text-white" aria-label="Próximo produto"><i data-lucide="arrow-right" class="w-5 h-5"></i></button>
             </div>
         </div>
     </section>
@@ -288,7 +320,7 @@
                         <button class="filter-button active rounded-full border border-gray-300 px-4 py-2 text-[10px] font-bold uppercase tracking-widest" type="button" data-filter="todos">Todos</button>
                         <button class="filter-button rounded-full border border-gray-300 px-4 py-2 text-[10px] font-bold uppercase tracking-widest" type="button" data-filter="feminina">Moda feminina</button>
                         <button class="filter-button rounded-full border border-gray-300 px-4 py-2 text-[10px] font-bold uppercase tracking-widest" type="button" data-filter="masculino">Moda masculina</button>
-                        <button class="filter-button rounded-full border border-gray-300 px-4 py-2 text-[10px] font-bold uppercase tracking-widest" type="button" data-filter="streetwear">Moda de rua</button>
+                        <button class="filter-button rounded-full border border-gray-300 px-4 py-2 text-[10px] font-bold uppercase tracking-widest" type="button" data-filter="tenis">Tênis</button>
                         <button class="filter-button rounded-full border border-gray-300 px-4 py-2 text-[10px] font-bold uppercase tracking-widest" type="button" data-filter="calcados">Calçados</button>
                     </div>
                 </div>
@@ -368,7 +400,7 @@
                         <article class="product-card reveal group cursor-pointer" data-category="feminina">
                             <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-white">
                                 <img src="assets/look2.png" class="product-image w-full h-full object-cover" alt="Conjunto Oversized Preto" loading="lazy" decoding="async">
-                                <span class="product-badge absolute top-4 left-4 bg-white text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase">Moda de rua</span>
+                                <span class="product-badge absolute top-4 left-4 bg-white text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase">Tênis</span>
                                 <div class="product-overlay absolute inset-0 flex items-end bg-black/65 p-5 opacity-0">
                                     <span class="flex w-full items-center justify-between border-t border-white/40 pt-4 text-xs font-bold uppercase tracking-widest text-white">Ver detalhe <i data-lucide="arrow-up-right" class="w-4 h-4"></i></span>
                                 </div>
@@ -454,17 +486,17 @@
                     </div>
                 </section>
 
-                <section class="product-section" data-category="streetwear">
+                <section class="product-section" data-category="tenis">
                     <div class="mb-5 flex items-end justify-between gap-4">
                         <div>
-                            <span class="mb-2 block text-[10px] font-bold uppercase tracking-[0.25em] text-gray-500">Moda de rua</span>
+                            <span class="mb-2 block text-[10px] font-bold uppercase tracking-[0.25em] text-gray-500">Tênis</span>
                             <h3 class="font-display text-3xl leading-tight">Tênis</h3>
                         </div>
                         <span class="text-xs font-bold uppercase tracking-widest text-gray-400">3 peças</span>
                     </div>
 
                     <div class="product-carousel">
-                        <article class="product-card reveal group cursor-pointer" data-category="streetwear">
+                        <article class="product-card reveal group cursor-pointer" data-category="tenis">
                             <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-white">
                                 <img src="assets/tenis.png" class="product-image w-full h-full object-cover" alt="Tênis Urbano Branco" loading="lazy" decoding="async">
                                 <span class="product-badge absolute top-4 left-4 bg-white text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase">Mais vendido</span>
@@ -473,13 +505,13 @@
                                 </div>
                             </div>
                             <div class="flex justify-between gap-4 pt-4">
-                                <div><h3 class="font-medium text-lg">Tênis Urbano Branco</h3><p class="text-gray-500 text-sm">Moda de rua</p></div>
+                                <div><h3 class="font-medium text-lg">Tênis Urbano Branco</h3><p class="text-gray-500 text-sm">Tênis</p></div>
                                 <p class="font-bold text-lg">R$ 199,00</p>
                             </div>
                             <a href="#" data-whatsapp-message="Olá! Gostaria de saber mais sobre o Tênis Urbano Branco" target="_blank" rel="noopener" class="product-action mt-4 flex items-center justify-center gap-2 border border-black py-3 rounded-lg font-bold text-xs uppercase tracking-widest">Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                         </article>
 
-                        <article class="product-card reveal group cursor-pointer" data-category="streetwear" style="transition-delay: 70ms;">
+                        <article class="product-card reveal group cursor-pointer" data-category="tenis" style="transition-delay: 70ms;">
                             <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-white">
                                 <img src="assets/tenis2.png" class="product-image w-full h-full object-cover" alt="Tênis Branco de Perfil" loading="lazy" decoding="async">
                                 <span class="product-badge absolute top-4 left-4 bg-black text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase">Novo</span>
@@ -488,13 +520,13 @@
                                 </div>
                             </div>
                             <div class="flex justify-between gap-4 pt-4">
-                                <div><h3 class="font-medium text-lg">Tênis Branco de Perfil</h3><p class="text-gray-500 text-sm">Moda de rua</p></div>
+                                <div><h3 class="font-medium text-lg">Tênis Branco de Perfil</h3><p class="text-gray-500 text-sm">Tênis</p></div>
                                 <p class="font-bold text-lg">R$ 229,00</p>
                             </div>
                             <a href="#" data-whatsapp-message="Olá! Gostaria de saber mais sobre o Tênis Branco de Perfil" target="_blank" rel="noopener" class="product-action mt-4 flex items-center justify-center gap-2 border border-black py-3 rounded-lg font-bold text-xs uppercase tracking-widest">Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
                         </article>
 
-                        <article class="product-card reveal group cursor-pointer" data-category="streetwear" style="transition-delay: 140ms;">
+                        <article class="product-card reveal group cursor-pointer" data-category="tenis" style="transition-delay: 140ms;">
                             <div class="relative aspect-[3/4] overflow-hidden rounded-xl bg-white">
                                 <img src="assets/tenis3.png" class="product-image w-full h-full object-cover" alt="Tênis Casual Preto" loading="lazy" decoding="async">
                                 <span class="product-badge absolute top-4 left-4 bg-black text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase">Mais procurado</span>
@@ -503,7 +535,7 @@
                                 </div>
                             </div>
                             <div class="flex justify-between gap-4 pt-4">
-                                <div><h3 class="font-medium text-lg">Tênis Casual Preto</h3><p class="text-gray-500 text-sm">Moda de rua</p></div>
+                                <div><h3 class="font-medium text-lg">Tênis Casual Preto</h3><p class="text-gray-500 text-sm">Tênis</p></div>
                                 <p class="font-bold text-lg">R$ 219,90</p>
                             </div>
                             <a href="#" data-whatsapp-message="Olá! Gostaria de saber mais sobre o Tênis Casual Preto" target="_blank" rel="noopener" class="product-action mt-4 flex items-center justify-center gap-2 border border-black py-3 rounded-lg font-bold text-xs uppercase tracking-widest">Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
@@ -606,10 +638,6 @@
                     <span class="mb-4 block text-xs font-bold uppercase tracking-[0.3em] text-gray-500">Linha de fragrâncias</span>
                     <h2 class="font-display text-4xl leading-tight sm:text-6xl">Perfumes para<br><span class="italic">ficar na memória.</span></h2>
                 </div>
-                <div class="flex gap-3 reveal">
-                    <button type="button" class="perfume-prev flex h-12 w-12 items-center justify-center rounded-full border border-black/20 transition-colors hover:bg-black hover:text-white" aria-label="Anterior perfume"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
-                    <button type="button" class="perfume-next flex h-12 w-12 items-center justify-center rounded-full border border-black/20 transition-colors hover:bg-black hover:text-white" aria-label="Próximo perfume"><i data-lucide="arrow-right" class="w-5 h-5"></i></button>
-                </div>
             </div>
 
             <div class="perfume-carousel reveal flex snap-x gap-4 overflow-x-auto pb-4 sm:gap-6" data-carousel="perfumes">
@@ -626,28 +654,32 @@
                     <div class="p-5"><h3 class="font-display text-2xl">Perfume de Edição</h3><p class="mt-2 text-sm text-gray-500">Fragrância selecionada para o momento.</p></div>
                 </article>
             </div>
+            <div class="mt-6 hidden justify-end gap-3 reveal md:flex">
+                <button type="button" class="perfume-prev flex h-12 w-12 items-center justify-center rounded-full border border-black/20 transition-colors hover:bg-black hover:text-white" aria-label="Anterior perfume"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+                <button type="button" class="perfume-next flex h-12 w-12 items-center justify-center rounded-full border border-black/20 transition-colors hover:bg-black hover:text-white" aria-label="Próximo perfume"><i data-lucide="arrow-right" class="w-5 h-5"></i></button>
+            </div>
         </div>
     </section>
 
-    <section class="bg-[#f3efee] px-6 py-20 text-[#21191b]">
+    <section class="bg-[#f1f1ef] px-6 py-20 text-[#21191b]">
         <div class="max-w-7xl mx-auto">
             <div class="grid gap-10 border-y border-[#21191b]/10 py-12 md:grid-cols-[0.85fr_1fr] md:items-center">
                 <div class="reveal">
-                    <span class="mb-4 block text-[10px] font-bold uppercase tracking-[0.3em] text-[#8f6b70]">Tribo da Moda</span>
+                    <span class="mb-4 block text-[10px] font-bold uppercase tracking-[0.3em] text-[#6f6a68]">Tribo da Moda</span>
                     <h2 class="font-display text-4xl leading-tight sm:text-5xl md:text-6xl">Detalhes que mudam<br><span class="italic">a presença.</span></h2>
                 </div>
 
                 <div class="grid gap-4 sm:grid-cols-3">
                     <div class="reveal border-l border-[#21191b]/15 pl-5">
-                        <span class="mb-3 block text-[10px] font-bold uppercase tracking-[0.25em] text-[#8f6b70]">01 · Curadoria</span>
+                        <span class="mb-3 block text-[10px] font-bold uppercase tracking-[0.25em] text-[#6f6a68]">01 · Curadoria</span>
                         <p class="text-lg font-semibold leading-snug">Peças escolhidas com intenção.</p>
                     </div>
                     <div class="reveal border-l border-[#21191b]/15 pl-5" style="transition-delay: 100ms;">
-                        <span class="mb-3 block text-[10px] font-bold uppercase tracking-[0.25em] text-[#8f6b70]">02 · Experiência</span>
+                        <span class="mb-3 block text-[10px] font-bold uppercase tracking-[0.25em] text-[#6f6a68]">02 · Experiência</span>
                         <p class="text-lg font-semibold leading-snug">Atendimento próximo e direto.</p>
                     </div>
                     <div class="reveal border-l border-[#21191b]/15 pl-5" style="transition-delay: 200ms;">
-                        <span class="mb-3 block text-[10px] font-bold uppercase tracking-[0.25em] text-[#8f6b70]">03 · Presença</span>
+                        <span class="mb-3 block text-[10px] font-bold uppercase tracking-[0.25em] text-[#6f6a68]">03 · Presença</span>
                         <p class="text-lg font-semibold leading-snug">Combinações para marcar o olhar.</p>
                     </div>
                 </div>
@@ -660,10 +692,10 @@
         <div class="max-w-7xl mx-auto">
             <div class="grid gap-10 border-b border-[#f8f4f1]/10 py-16 lg:grid-cols-[1fr_auto] lg:items-end">
                 <div>
-                    <span class="mb-4 block text-[10px] font-bold uppercase tracking-[0.3em] text-[#c79da3]">Atendimento personalizado</span>
+                    <span class="mb-4 block text-[10px] font-bold uppercase tracking-[0.3em] text-[#a8a3a1]">Atendimento personalizado</span>
                     <h2 class="font-display text-4xl leading-tight sm:text-5xl md:text-6xl">Vista sua próxima<br><span class="italic">versão com intenção.</span></h2>
                 </div>
-                <a href="#" data-whatsapp-message="Olá! Gostaria de falar com a Tribo da Moda" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-3 rounded-full bg-[#f8f4f1] px-8 py-4 text-xs font-bold uppercase tracking-widest text-[#181214] transition-all hover:bg-[#e7d7d2]">
+                <a href="#" data-whatsapp-message="Olá! Gostaria de falar com a Tribo da Moda" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-3 rounded-full bg-[#f8f4f1] px-8 py-4 text-xs font-bold uppercase tracking-widest text-[#181214] transition-all hover:bg-[#d7d3d1]">
                     <i data-lucide="message-circle" class="w-4 h-4"></i>
                     Falar no WhatsApp
                 </a>
@@ -702,18 +734,18 @@
                     <h4 class="mb-6 text-xs font-bold uppercase tracking-widest text-[#f8f4f1]">Contato</h4>
                     <ul class="space-y-4 text-sm text-[#f8f4f1]/60">
                         <li class="flex items-start gap-3">
-                            <i data-lucide="map-pin" class="mt-0.5 w-4 h-4 shrink-0 text-[#c79da3]"></i>
+                            <i data-lucide="map-pin" class="mt-0.5 w-4 h-4 shrink-0 text-[#a8a3a1]"></i>
                             <span>Av. Principal, 123 - Centro</span>
                         </li>
                         <li>
                             <a href="tel:+5511999999999" class="flex items-center gap-3 transition-colors hover:text-[#f8f4f1]">
-                                <i data-lucide="phone" class="w-4 h-4 shrink-0 text-[#c79da3]"></i>
+                                <i data-lucide="phone" class="w-4 h-4 shrink-0 text-[#a8a3a1]"></i>
                                 <span>(11) 99999-9999</span>
                             </a>
                         </li>
                         <li>
                             <a href="#" data-email="contato@tribodamoda.com" class="flex items-center gap-3 transition-colors hover:text-[#f8f4f1]">
-                                <i data-lucide="mail" class="w-4 h-4 shrink-0 text-[#c79da3]"></i>
+                                <i data-lucide="mail" class="w-4 h-4 shrink-0 text-[#a8a3a1]"></i>
                                 <span>contato@tribodamoda.com</span>
                             </a>
                         </li>
@@ -845,14 +877,6 @@
 
             previousButton.addEventListener('click', () => scrollByCard(-1));
             nextButton.addEventListener('click', () => scrollByCard(1));
-        });
-
-        document.querySelectorAll('.product-carousel, .showcase-carousel, .look-carousel, .perfume-carousel').forEach(carousel => {
-            carousel.addEventListener('wheel', event => {
-                if (carousel.scrollWidth <= carousel.clientWidth) return;
-                event.preventDefault();
-                carousel.scrollLeft += event.deltaY;
-            }, { passive: false });
         });
 
         const menuBtn = document.getElementById('menuBtn');
